@@ -1,25 +1,53 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react'
+
 import './App.css';
+import ImageContainer from './components/ImageContainer';
+import Ranger from './components/Ranger';
+import ToolBar from './components/ToolBar';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+	const [properties, setProperties] = useState({
+		blur: 0,
+		brightness: 100,
+		contrast: 100,
+		grayscale: 0,
+		hueRotate: 0,
+		saturate: 100,
+		sepia: 0,
+		opacity: 100
+	})
 
+	const [currentProperty, setCurrentProperty] = useState('blur')
+	const [currentValue, setCurrentValue] = useState(0)
+
+	useEffect(() => {
+		const newValue = properties[currentProperty]
+		setCurrentValue(newValue)
+	}, [currentProperty])
+
+	useEffect(() => {
+		const newProperties = {...properties}
+		newProperties[currentProperty] = currentValue
+		setProperties(newProperties)
+	}, [currentValue])
+
+	const methods = Object.keys(properties)
+
+	const handleMethodClick = e => {
+		const newProperty = e.target.name
+		setCurrentProperty(newProperty)
+	}
+
+	const handleRangerChange = e => {
+		setCurrentValue(e.target.value)
+	}
+
+	return (
+		<div className="App">
+			<ImageContainer properties={properties}/>
+			<ToolBar methods={methods} onMethodClick={handleMethodClick} activeProperty={currentProperty}/>
+			<Ranger value={currentValue} onRangerChange={handleRangerChange}/>
+		</div>
+	);
+}
 export default App;

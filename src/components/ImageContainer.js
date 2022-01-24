@@ -15,16 +15,15 @@ const ImageContainer = ({properties}) => {
 		fileReader.readAsDataURL(file)
 	}
 
-	const methods = Object.keys(properties)
-	methods.forEach(method => {
-		document.getElementById('root').style.setProperty(`--${method}`, properties[method])
+	const filters = properties.map(property => {
+		return `${property.property}(${property.value}${property.unit})`
 	})
 
-
+	const styles = {filter: filters.join(' ')}
 
   	return (
 		  <div className="image-container">
-			{ image ? (<ImageView imageURL={image}/>) : (<ImageInput onImageAdded={handleImageAdded}/>)}  
+			{ image ? (<ImageView imageURL={image} styles={styles}/>) : (<ImageInput onImageAdded={handleImageAdded}/>)}  
 		  </div>
 	  )	
 };

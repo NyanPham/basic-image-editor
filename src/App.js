@@ -5,48 +5,118 @@ import ImageContainer from './components/ImageContainer';
 import Ranger from './components/Ranger';
 import ToolBar from './components/ToolBar';
 
+const DEFAULT_OPTIONS = [
+	{
+		name: 'Brightness',
+		property: 'brightness',
+		value: 100,
+		range: {
+			min: 0,
+			max: 200
+		},
+		unit: '%'
+	},
+	{
+		name: 'Contrast',
+		property: 'contrast',
+		value: 100,
+		range: {
+			min: 0,
+			max: 200
+		},
+		unit: '%'
+	},
+	{
+		name: 'Saturation',
+		property: 'saturate',
+		value: 100,
+		range: {
+			min: 0,
+			max: 200
+		},
+		unit: '%'
+	},
+	{
+		name: 'Grayscale',
+		property: 'grayscale',
+		value: 0,
+		range: {
+			min: 0,
+			max: 100
+		},
+		unit: '%'
+	},
+	{
+		name: 'Hue Rotate',
+		property: 'hue-rotate',
+		value: 0,
+		range: {
+			min: 0,
+			max: 360
+		},
+		unit: 'deg'
+	},
+	{
+		name: 'Sepia',
+		property: 'sepia',
+		value: 0,
+		range: {
+			min: 0,
+			max: 100
+		},
+		unit: '%'
+	},
+	{
+		name: 'Opacity',
+		property: 'opacity',
+		value: 100,
+		range: {
+			min: 0,
+			max: 100
+		},
+		unit: '%'
+	},
+	{
+		name: 'Blur',
+		property: 'blur',
+		value: 0,
+		range: {
+			min: 0,
+			max: 20
+		},
+		unit: 'px'
+	},
+]
+
+
 function App() {
-	const [properties, setProperties] = useState({
-		blur: 0,
-		brightness: 100,
-		contrast: 100,
-		grayscale: 0,
-		hueRotate: 0,
-		saturate: 100,
-		sepia: 0,
-		opacity: 100
-	})
+	const [options, setOptions] = useState(DEFAULT_OPTIONS)
+	const [selectedOptionIndex, setSelectedOptionIndex] = useState(0)
+	const selectedOption = options[selectedOptionIndex]
 
-	const [currentProperty, setCurrentProperty] = useState('blur')
-	const [currentValue, setCurrentValue] = useState(0)
+	const optionNames = options.map(option => (option.name))
 
-	useEffect(() => {
-		const newValue = properties[currentProperty]
-		setCurrentValue(newValue)
-	}, [currentProperty])
-
-	useEffect(() => {
-		const newProperties = {...properties}
-		newProperties[currentProperty] = currentValue
-		setProperties(newProperties)
-	}, [currentValue])
-
-	const methods = Object.keys(properties)
-
-	const handleMethodClick = e => {
-		const newProperty = e.target.name
-		setCurrentProperty(newProperty)
+	const handleChangeOption = (index) => {
+		setSelectedOptionIndex(index)
 	}
-
+	
 	const handleRangerChange = e => {
-		setCurrentValue(e.target.value)
+		setOptions(prevOptions => prevOptions.map((option, index) => {
+			if (index !== selectedOptionIndex) return option
+			return {...option, value: e.target.value}
+		}))
 	}
 
 	return (
 		<div className="App">
-			<ImageContainer properties={properties}/>
-			<ToolBar methods={methods} onMethodClick={handleMethodClick} activeProperty={currentProperty}/>
-			<Ranger value={currentValue} onRangerChange={handleRangerChange}/>
+			<ImageContainer properties={options}/>
+			<ToolBar optionNames={optionNames} activeIndex={selectedOptionIndex} onToolBarItemClick={handleChangeOption}/>
+			<Ranger 
+				min={selectedOption.range.min}
+				max={selectedOption.range.max}
+				value={selectedOption.value}
+				onChange={handleRangerChange}
+			/>
 		</div>
 	);
 }

@@ -1,9 +1,9 @@
 import React from 'react';
 
-const Ranger = ({value, onRangerChange}) => {
+const Ranger = ({min, max, value, onChange}) => {
 	return (
 		<div className="ranger">
-			<input type="range" min="0" max="100" value={value} onChange={onRangerChange}/>
+			<input type="range" min={min} max={max} value={value} onChange={onChange}/>
 		</div>
 	)
 };
